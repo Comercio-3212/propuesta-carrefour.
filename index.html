@@ -32,9 +32,9 @@
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-blue-700 uppercase tracking-tighter">Nueva Generación de Comercio</span>
                 </div>
-                <button onclick="downloadOfflineVersion()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-all shadow-md flex items-center gap-2">
-                    📥 Descargar Portal
-                </button>
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Portal de Propuesta</span>
+                </div>
             </div>
         </div>
     </nav>
@@ -52,13 +52,13 @@
     <!-- Propuesta -->
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white p-8 rounded-xl border border-slate-200 card-hover transition-all">
+            <div class="bg-white p-8 rounded-xl border border-slate-200 card-hover transition-all border-l-4 border-l-red-500">
                 <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center">
                     <span class="mr-2">⛔</span> Modelo Actual
                 </h3>
                 <p class="text-slate-600">El dinero descontado por llegadas tarde o ausencias queda en manos de la empresa como un ahorro operativo.</p>
             </div>
-            <div class="bg-white p-8 rounded-xl border border-blue-200 card-hover transition-all">
+            <div class="bg-white p-8 rounded-xl border border-blue-200 card-hover transition-all border-l-4 border-l-emerald-500">
                 <h3 class="text-xl font-bold text-emerald-600 mb-4 flex items-center">
                     <span class="mr-2">✅</span> Modelo Propuesto
                 </h3>
@@ -77,6 +77,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-sm">
                         <h3 class="font-bold mb-4 border-b pb-2">Estado de la Nómina</h3>
                         <div id="team-controls" class="space-y-3"></div>
+                        <p class="text-[10px] text-slate-400 mt-4 italic">* Cambia el estado de los trabajadores para ver el reparto.</p>
                     </div>
                 </div>
                 <!-- Gráfico -->
@@ -132,8 +133,8 @@
                 div.className = "flex justify-between items-center p-2 bg-slate-50 rounded border text-sm";
                 div.innerHTML = `
                     <span class="font-medium">${m.name}</span>
-                    <select onchange="updateMember(${m.id}, this.value)" class="p-1 rounded border text-xs">
-                        <option value="full" ${m.status==='full'?'selected':''}>Cumple</option>
+                    <select onchange="updateMember(${m.id}, this.value)" class="p-1 rounded border text-xs outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="full" ${m.status==='full'?'selected':''}>Presente</option>
                         <option value="loss-100" ${m.status==='loss-100'?'selected':''}>Ausente</option>
                     </select>`;
                 container.appendChild(div);
@@ -182,21 +183,25 @@
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return '$' + value.toLocaleString('es-AR'); }
+                            }
+                        } 
+                    }
                 }
             });
         }
 
-        function downloadOfflineVersion() {
-            const html = document.documentElement.outerHTML;
-            const blob = new Blob([html], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'Propuesta_Incentivo_NGC.html';
-            a.click();
-        }
-
-        window.onload = () => { renderControls(); calculate(); };
+        window.onload = () => { 
+            renderControls(); 
+            calculate(); 
+        };
     </script>
 </body>
 </html>
